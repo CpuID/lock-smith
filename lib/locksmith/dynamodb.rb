@@ -66,8 +66,7 @@ module Locksmith
 
     def dynamo
       @dynamo_lock.synchronize do
-        @db ||= AWS::DynamoDB.new(:access_key_id => Config.aws_id,
-                                  :secret_access_key => Config.aws_secret)
+        @db ||= AWS::DynamoDB.new
       end
     end
 
