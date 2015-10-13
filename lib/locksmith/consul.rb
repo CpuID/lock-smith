@@ -45,6 +45,7 @@ module Locksmith
       consul_host = Config.consul_host
       raise 'Consul Host should be specified in the format hostname:port, no protocol required.' if consul_host.match(/:\/\//)
       consul_host = "http://#{consul_host}"
+      raise 'TTL must be an numeric value in seconds (no decimals)' unless @ttl.to_s.match(/^[0-9]+$/)
       @consul_lock.synchronize do
         Diplomat.configure do |config|
           config.url = consul_host
@@ -53,7 +54,7 @@ module Locksmith
         @diplomat_session ||= Diplomat::Session.create({
           :Node => Socket.gethostname,
           :Name => 'lock-smith',
-          :TTL  => @ttl
+          :TTL  => "#{@ttl}s"
         })
       end
       return @diplomat_session
