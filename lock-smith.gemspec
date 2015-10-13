@@ -11,4 +11,6 @@ Gem::Specification.new do |s|
   s.license       = "MIT"
   s.files         = Dir.glob("lib/**/*") << "readme.md"
   s.require_path  = "lib"
+
+  s.add_dependency('diplomat', '0.14.0')
 end

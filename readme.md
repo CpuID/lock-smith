@@ -4,6 +4,7 @@ A library of locking algorithms for a variety of data stores. Supported Data Sto
 
 * DynamoDB *
 * PostgreSQL
+* Consul
 
 \* The DynamoDB code uses a TTL based lock expiration. You should be comfortable with the implications outlined [here](https://gist.github.com/c95fd21fab91b0823328).
 
@@ -61,6 +62,20 @@ end
 * lspace - This defines which lock space lock-smith will use. This is handy if you have multiple applications using advisory locks.
 * ttl - Wraps your block in a timeout. Be sure to handle `Timeout::Error`.
 * attempts - Number of attempts to try advisory lock. Your code will only run once.
+
+### Consul
+
+Consul has support for distributed locks via the sessions mechanism, we use these via the Diplomat gem (HTTP wrapper to Consul). See [this document](https://www.consul.io/docs/internals/sessions.html) for details.
+
+```ruby
+ENV['CONSUL_HOST'] = "127.0.0.1:8500"
+# Optional
+ENV['CONSUL_ACL_TOKEN'] = "xxxxxxxx-yyyy-zzzz-1111-222222222222"
+```
+
+#### Options
+
+* TODO
 
 ## Hacking on Locksmith
 
