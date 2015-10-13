@@ -42,9 +42,12 @@ module Locksmith
     end
 
     def diplomat_session
+      consul_host = Config.consul_host
+      raise 'Consul Host should be specified in the format hostname:port, no protocol required.' if consul_host.match(/:\/\//)
+      consul_host = "http://#{consul_host}"
       @consul_lock.synchronize do
         Diplomat.configure do |config|
-          config.url = Config.consul_host
+          config.url = consul_host
           config.acl_token = Config.consul_acl_token unless Config.consul_acl_token.nil?
         end
         @diplomat_session ||= Diplomat::Session.create({
