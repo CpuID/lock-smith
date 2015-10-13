@@ -52,7 +52,6 @@ module Locksmith
           config.acl_token = Config.consul_acl_token unless Config.consul_acl_token.nil?
         end
         @diplomat_session ||= Diplomat::Session.create({
-          :Node => Socket.gethostname,
           :Name => 'lock-smith',
           :TTL  => "#{@ttl}s"
         })
