@@ -75,7 +75,8 @@ ENV['CONSUL_ACL_TOKEN'] = "xxxxxxxx-yyyy-zzzz-1111-222222222222"
 
 #### Options
 
-* TODO
+* ttl - Sets TTL on the Consul Session and wraps our block in a timeout. Be sure to handle `Timeout::Error`.
+* attempts - Number of attempts to create Consul K/V lock. Your code will only run once.
 
 ## Hacking on Locksmith
 
