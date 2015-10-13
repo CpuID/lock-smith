@@ -34,8 +34,13 @@ module Locksmith
       @consul_host ||= env!("CONSUL_HOST")
     end
 
+    # Optional argument
     def consul_acl_token
-      @consul_acl_token ||= env!("CONSUL_ACL_TOKEN")
+      if ENV.has_key? 'CONSUL_ACL_TOKEN'
+        @consul_acl_token = ENV['CONSUL_ACL_TOKEN']
+      else
+        @consul_acl_token = nil
+      end
     end
 
     def consul_host=(value); @consul_host = value; end
