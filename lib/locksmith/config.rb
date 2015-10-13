@@ -29,5 +29,16 @@ module Locksmith
 
     def aws_id=(value); @aws_id = value; end
     def aws_secret=(value); @aws_secret = value; end
+
+    def consul_host
+      @consul_host ||= env!("CONSUL_HOST")
+    end
+
+    def consul_acl_token
+      @consul_acl_token ||= env!("CONSUL_ACL_TOKEN")
+    end
+
+    def consul_host=(value); @consul_host = value; end
+    def consul_acl_token=(value); @consul_acl_token = value; end
   end
 end
