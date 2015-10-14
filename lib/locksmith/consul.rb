@@ -10,6 +10,7 @@ module Locksmith
     # This module is safe for threads.
     @consul_lock = Mutex.new
     @ttl = 60
+    @existing_diplomat_session_expire = nil
 
     def logger
       @logger ||= Logger.new(STDOUT)
@@ -58,12 +59,21 @@ module Locksmith
           config.url = consul_host
           config.acl_token = Config.consul_acl_token unless Config.consul_acl_token.nil?
         end
+        unless @existing_diplomat_session_expire.nil?
+          # Get a new one if we are within 5 seconds of the previous one, to be safe.
+          @existing_diplomat_session_expire >= (Time.now.to_i - 5)
+            @diplomat_session = nil
+            @existing_diplomat_session_expire = nil
+            logger.info "Previous Consul session expired."
+          end
+        end
         logger.info "Current Consul Session: #{@diplomat_session}"
         @diplomat_session ||= Diplomat::Session.create({
           :Name => 'lock-smith',
           :TTL  => "#{@ttl}s"
         })
         logger.info "New Consul Session: #{@diplomat_session}"
+        @existing_diplomat_session_expire = Time.now.to_i + @ttl.to_i
       end
       return @diplomat_session
     end
