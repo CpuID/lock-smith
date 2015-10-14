@@ -11,6 +11,11 @@ module Locksmith
     @consul_lock = Mutex.new
     @ttl = 60
 
+    def logger
+      @logger ||= Logger.new(STDOUT)
+      return @logger
+    end
+
     def lock(name, opts={})
       opts[:ttl] ||= 60
       opts[:attempts] ||= 3
@@ -26,6 +31,7 @@ module Locksmith
     def create(name, attempts)
       attempts.times do |i|
         begin
+          logger.info "Acquiring Lock: /locks/#{name}"
           lock_acquired = Diplomat::Lock.acquire("/locks/#{name}", diplomat_session)
           if lock_acquired == true
             return(true)
@@ -38,6 +44,7 @@ module Locksmith
     end
 
     def delete(name)
+      logger.info "Releasing Lock: /locks/#{name}"
       Diplomat::Lock.release("/locks/#{name}", diplomat_session)
     end
 
@@ -51,10 +58,12 @@ module Locksmith
           config.url = consul_host
           config.acl_token = Config.consul_acl_token unless Config.consul_acl_token.nil?
         end
+        logger.info "Current Consul Session: #{@diplomat_session}"
         @diplomat_session ||= Diplomat::Session.create({
           :Name => 'lock-smith',
           :TTL  => "#{@ttl}s"
         })
+        logger.info "New Consul Session: #{@diplomat_session}"
       end
       return @diplomat_session
     end
