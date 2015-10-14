@@ -61,7 +61,7 @@ module Locksmith
         end
         unless @existing_diplomat_session_expire.nil?
           # Get a new one if we are within 5 seconds of the previous one, to be safe.
-          if @existing_diplomat_session_expire >= (Time.now.to_i - 5)
+          if @existing_diplomat_session_expire <= (Time.now.to_i - 5)
             @diplomat_session = nil
             @existing_diplomat_session_expire = nil
             logger.info "Previous Consul session expired."
